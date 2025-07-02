@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boutique Café Virtual Concierge</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFCEE; /* Light cream background */
+            color: #333;
+        }
+        .container {
+            max-width: 90%;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        .header-bg {
+            background-color: #8B4513; /* Saddle Brown */
+            color: #FFF;
+        }
+        .btn-primary {
+            background-color: #A0522D; /* Sienna */
+            color: #FFF;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #CD853F; /* Peru */
+        }
+        .card {
+            background-color: #FFF;
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 2rem;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="date"],
+        input[type="time"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #D1D5DB; /* Light gray border */
+            border-radius: 0.5rem;
+            background-color: #F9FAFB; /* Off-white input background */
+        }
+        label {
+            font-weight: 500;
+            color: #4B5563; /* Darker gray for labels */
+        }
+        .reservation-message {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            text-align: center;
+        }
+        .reservation-message.success {
+            background-color: #D1FAE5; /* Light green */
+            color: #065F46; /* Dark green text */
+        }
+        .reservation-message.error {
+            background-color: #FEE2E2; /* Light red */
+            color: #991B1B; /* Dark red text */
+        }
+        /* Modal styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+        }
+        .close-button {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3; /* Light grey */
+            border-top: 4px solid #A0522D; /* Sienna */
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 10px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col">
+
+    <!-- Header Section -->
+    <header class="header-bg py-6 shadow-md rounded-b-2xl mx-auto w-full md:w-11/12 lg:w-4/5 xl:w-3/4">
+        <div class="container text-center">
+            <h1 class="text-4xl font-bold mb-2">The Cozy Bean Café</h1>
+            <p class="text-xl italic">Your perfect escape for coffee and comfort.</p>
+            <!-- User ID display removed as authentication is now backend-managed -->
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow container mt-8 flex flex-col lg:flex-row gap-8">
+
+        <!-- Cafe Description Section -->
+        <section class="card lg:w-1/2 p-6 md:p-8 rounded-xl shadow-lg">
+            <h2 class="text-3xl font-semibold text-center mb-6 text-orange-800">Welcome to The Cozy Bean!</h2>
+            <p class="text-gray-700 leading-relaxed mb-4">
+                Nestled in the heart of the city, The Cozy Bean Café is more than just a coffee shop – it's a sanctuary for the senses.
+                We pride ourselves on serving exquisitely crafted coffee, from rich espresso to velvety lattes,
+                all made with ethically sourced beans. Our menu also features a delectable array of freshly baked pastries,
+                savory sandwiches, and light salads, perfect for any time of day.
+            </p>
+            <p class="text-gray-700 leading-relaxed mb-4">
+                Our ambiance is designed for relaxation and connection. Whether you're looking for a quiet corner to work,
+                a comfy spot to catch up with friends, or simply a moment of peace with a good book,
+                The Cozy Bean provides the perfect setting. We offer complimentary Wi-Fi and a selection of local newspapers.
+            </p>
+            <p class="text-gray-700 leading-relaxed">
+                Come and experience the warmth, the aroma, and the friendly faces that make The Cozy Bean your favorite local café.
+                We can't wait to welcome you!
+            </p>
+            <div class="mt-6 text-center">
+                <img src="https://placehold.co/600x400/D2B48C/8B4513?text=Cozy+Cafe+Interior" alt="Cozy Cafe Interior" class="rounded-lg shadow-md mx-auto w-full md:w-3/4 lg:w-full h-auto object-cover">
+                <p class="text-sm text-gray-500 mt-2">A glimpse inside our welcoming space.</p>
+            </div>
+        </section>
+
+        <!-- Reservation & Preferences Section -->
+        <section class="card lg:w-1/2 p-6 md:p-8 rounded-xl shadow-lg">
+            <h2 class="text-3xl font-semibold text-center mb-6 text-orange-800">Make a Reservation</h2>
+
+            <form id="reservationForm">
+                <!-- Name and Email -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="name" class="block text-gray-700 text-sm font-medium mb-1">Your Name</label>
+                        <input type="text" id="name" name="name" placeholder="John Doe" required
+                            class="focus:ring-orange-500 focus:border-orange-500 rounded-lg">
+                    </div>
+                    <div>
+                        <label for="email" class="block text-gray-700 text-sm font-medium mb-1">Email Address</label>
+                        <input type="email" id="email" name="email" placeholder="john.doe@example.com" required
+                            class="focus:ring-orange-500 focus:border-orange-500 rounded-lg">
+                    </div>
+                </div>
+
+                <!-- Date, Time, and Guests -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label for="date" class="block text-gray-700 text-sm font-medium mb-1">Date</label>
+                        <input type="date" id="date" name="date" required
+                            class="focus:ring-orange-500 focus:border-orange-500 rounded-lg">
+                    </div>
+                    <div>
+                        <label for="time" class="block text-gray-700 text-sm font-medium mb-1">Time</label>
+                        <input type="time" id="time" name="time" required
+                            class="focus:ring-orange-500 focus:border-orange-500 rounded-lg">
+                    </div>
+                    <div>
+                        <label for="guests" class="block text-gray-700 text-sm font-medium mb-1">Number of Guests</label>
+                        <input type="number" id="guests" name="guests" min="1" max="10" value="2" required
+                            class="focus:ring-orange-500 focus:border-orange-500 rounded-lg">
+                    </div>
+                </div>
+
+                <!-- Preferred Location -->
+                <div>
+                    <label for="location" class="block text-gray-700 text-sm font-medium mb-1">Preferred Location</label>
+                    <select id="location" name="location"
+                        class="focus:ring-orange-500 focus:border-orange-500 rounded-lg">
+                        <option value="">Any preference</option>
+                        <option value="window">Window Seat</option>
+                        <option value="cozy_corner">Cozy Corner</option>
+                        <option value="near_fireplace">Near Fireplace</option>
+                        <option value="outdoor">Outdoor Seating (Weather Permitting)</option>
+                    </select>
+                </div>
+
+                <!-- Allergies and Dietary Preferences -->
+                <div>
+                    <label for="dietary" class="block text-gray-700 text-sm font-medium mb-1">Allergies/Dietary Preferences</label>
+                    <textarea id="dietary" name="dietary" rows="3"
+                        placeholder="e.g., Gluten-free, Nut allergy, Vegan, Vegetarian"
+                        class="focus:ring-orange-500 focus:border-orange-500 rounded-lg"></textarea>
+                </div>
+
+                <div class="text-center mt-6">
+                    <button type="submit" class="btn-primary rounded-full hover:shadow-lg transition duration-300" id="submitBtn">
+                        Confirm Reservation
+                        <span id="loadingSpinner" class="loading-spinner hidden"></span>
+                    </button>
+                </div>
+
+                <div id="reservationMessage" class="reservation-message hidden"></div>
+            </form>
+
+            <h3 class="text-2xl font-semibold text-center mt-8 mb-4 text-orange-800">Your Upcoming Reservations</h3>
+            <div id="reservationList" class="space-y-4">
+                <!-- Reservations will be loaded here -->
+                <p id="noReservationsMessage" class="text-center text-gray-500">No reservations found.</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="bg-orange-800 text-white py-4 mt-8 rounded-t-2xl mx-auto w-full md:w-11/12 lg:w-4/5 xl:w-3/4">
+        <div class="container text-center text-sm">
+            <p>&copy; 2025 The Cozy Bean Café. All rights reserved.</p>
+            <p>Contact us: <a href="mailto:info@cozybeancafe.com" class="underline hover:text-orange-200">info@cozybeancafe.com</a> | (123) 456-7890</p>
+        </div>
+    </footer>
+
+    <!-- The Modal -->
+    <div id="messageModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <p id="modalMessage" class="text-lg font-medium"></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const API_BASE_URL = window.location.protocol + "//" + window.location.hostname + ":8000/api";
+            // For local Docker Compose, this will resolve to http://localhost:8000/api
+
+            const reservationForm = document.getElementById('reservationForm');
+            const reservationListDiv = document.getElementById('reservationList');
+            const noReservationsMessage = document.getElementById('noReservationsMessage');
+            const submitBtn = document.getElementById('submitBtn');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+
+            // Modal elements
+            const messageModal = document.getElementById('messageModal');
+            const modalMessage = document.getElementById('modalMessage');
+            const closeButton = document.querySelector('.close-button');
+
+            /**
+             * Displays a message using a custom modal.
+             * @param {string} message - The message to display.
+             * @param {'success'|'error'} type - The type of message (e.g., 'success', 'error').
+             */
+            function displayModalMessage(message, type) {
+                modalMessage.textContent = message;
+                if (type === 'success') {
+                    modalMessage.style.color = '#065F46'; // Dark green
+                } else if (type === 'error') {
+                    modalMessage.style.color = '#991B1B'; // Dark red
+                }
+                messageModal.style.display = 'flex'; // Show the modal
+            }
+
+            // Close modal when close button is clicked
+            closeButton.onclick = function() {
+                messageModal.style.display = 'none';
+            }
+
+            // Close modal when clicking outside of it
+            window.onclick = function(event) {
+                if (event.target == messageModal) {
+                    messageModal.style.display = 'none';
+                }
+            }
+
+            /**
+             * Fetches and displays reservations from the backend API.
+             */
+            async function loadReservations() {
+                try {
+                    const response = await fetch(`${API_BASE_URL}/reservations`);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const data = await response.json();
+                    renderReservations(data); // The API now returns a list directly
+                } catch (error) {
+                    console.error("Error fetching reservations:", error);
+                    displayModalMessage("Failed to load your reservations. Please check the backend API.", "error");
+                }
+            }
+
+            /**
+             * Renders the list of reservations in the UI.
+             * @param {Array} reservations - An array of reservation objects.
+             */
+            function renderReservations(reservations) {
+                reservationListDiv.innerHTML = ''; // Clear previous list
+                if (reservations.length === 0) {
+                    noReservationsMessage.classList.remove('hidden');
+                    if (!reservationListDiv.contains(noReservationsMessage)) {
+                        reservationListDiv.appendChild(noReservationsMessage);
+                    }
+                } else {
+                    noReservationsMessage.classList.add('hidden');
+                    // Sort reservations by timestamp in descending order (most recent first)
+                    reservations.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+                    reservations.forEach(reservation => {
+                        const reservationCard = document.createElement('div');
+                        reservationCard.className = 'bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-200 flex justify-between items-center';
+                        reservationCard.innerHTML = `
+                            <div>
+                                <p class="font-semibold text-gray-800">${reservation.name} - ${reservation.guests} guests</p>
+                                <p class="text-sm text-gray-600">${new Date(reservation.date).toLocaleDateString()} at ${reservation.time}</p>
+                                <p class="text-xs text-gray-500">Location: ${reservation.location || 'Any'}</p>
+                                ${reservation.dietary ? `<p class="text-xs text-gray-500">Dietary: ${reservation.dietary}</p>` : ''}
+                            </div>
+                            <button data-id="${reservation.id}" class="delete-btn bg-red-500 hover:bg-red-600 text-white p-2 rounded-full text-xs transition duration-300">
+                                Delete
+                            </button>
+                        `;
+                        reservationListDiv.appendChild(reservationCard);
+                    });
+
+                    // Add event listeners to delete buttons
+                    document.querySelectorAll('.delete-btn').forEach(button => {
+                        button.addEventListener('click', async (event) => {
+                            const reservationId = event.target.dataset.id;
+                            await deleteReservation(reservationId);
+                        });
+                    });
+                }
+            }
+
+            /**
+             * Deletes a reservation via the backend API.
+             * @param {string} id - The ID of the reservation document to delete.
+             */
+            async function deleteReservation(id) {
+                submitBtn.disabled = true;
+                loadingSpinner.classList.remove('hidden');
+                try {
+                    const response = await fetch(`${API_BASE_URL}/reservations/${id}`, {
+                        method: 'DELETE',
+                    });
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    displayModalMessage("Reservation successfully deleted!", "success");
+                    loadReservations(); // Reload list after deletion
+                } catch (e) {
+                    console.error("Error deleting reservation: ", e);
+                    displayModalMessage("Error deleting reservation. Please try again.", "error");
+                } finally {
+                    submitBtn.disabled = false;
+                    loadingSpinner.classList.add('hidden');
+                }
+            }
+
+            // Event listener for reservation form submission
+            reservationForm.addEventListener('submit', async function(event) {
+                event.preventDefault(); // Prevent default form submission
+
+                submitBtn.disabled = true;
+                loadingSpinner.classList.remove('hidden');
+
+                // Collect form data
+                const formData = {
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    date: document.getElementById('date').value,
+                    time: document.getElementById('time').value,
+                    guests: parseInt(document.getElementById('guests').value, 10),
+                    location: document.getElementById('location').value,
+                    dietary: document.getElementById('dietary').value
+                };
+
+                // Simple validation
+                if (!formData.name || !formData.email || !formData.date || !formData.time || !formData.guests) {
+                    displayModalMessage('Please fill in all required fields.', 'error');
+                    submitBtn.disabled = false;
+                    loadingSpinner.classList.add('hidden');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/reservations`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(formData),
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(`HTTP error! status: ${response.status}, detail: ${errorData.detail}`);
+                    }
+
+                    const result = await response.json();
+                    console.log("Reservation created:", result);
+                    displayModalMessage('Reservation confirmed and saved!', 'success');
+                    reservationForm.reset(); // Clear the form
+                    loadReservations(); // Reload list to show new reservation
+                } catch (e) {
+                    console.error("Error adding reservation: ", e);
+                    displayModalMessage(`Failed to confirm reservation: ${e.message}. Please try again.`, 'error');
+                } finally {
+                    submitBtn.disabled = false;
+                    loadingSpinner.classList.add('hidden');
+                }
+            });
+
+            // Load reservations when the page loads
+            loadReservations();
+        });
+    </script>
+</body>
+</html>

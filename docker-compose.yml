@@ -1,0 +1,74 @@
+# virtual-concierge-app/docker-compose.yml
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend-app # Build context is the frontend-app directory
+      dockerfile: Dockerfile
+    ports:
+      - "80:80" # Map host port 80 to container port 80
+    depends_on:
+      - reservation-api # Ensure the API service is up before frontend starts
+    restart: unless-stopped # Automatically restart if it crashes
+
+  reservation-api:
+    build:
+      context: . # Build context is the root directory (where docker-compose.yml is)
+      dockerfile: reservation-api-service/Dockerfile # Specify the Dockerfile path
+    ports:
+      - "8000:8000" # Map host port 8000 to container port 8000
+    environment:
+      # IMPORTANT: Path to your Firebase service account key JSON file INSIDE the container.
+      # This path must match the volume mount below.
+      - FIREBASE_SERVICE_ACCOUNT_PATH=/app/firebase-service-account.json
+      # APP_ID should be your Firebase Project ID or a custom ID matching your Firestore rules.
+      - APP_ID=your-firebase-project-id # <<< REPLACE THIS WITH YOUR ACTUAL FIREBASE PROJECT ID
+    volumes:
+      # Mount your local Firebase service account key JSON file into the container.
+      # REPLACE 'path/to/your/firebase-service-account.json' with the actual path
+      # on your host machine relative to this docker-compose.yml file.
+      # For example, if you place it directly in 'virtual-concierge-app/', use './firebase-service-account.json'.
+      - ./firebase-service-account.json:/app/firebase-service-account.json:ro
+    restart: unless-stopped # Automatically restart if it crashes
+
+  # Placeholder for future services:
+  notification-service:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
+    # ports:
+    #   - "8001:8001" # Example port
+    environment:
+      # - EXAMPLE_API_KEY=your_key
+      - APP_ID=your-firebase-project-id
+    depends_on:
+      - reservation-api
+    restart: unless-stopped
+
+  admin-dashboard-app:
+    build:
+      context: ./admin-dashboard-app
+      dockerfile: Dockerfile
+    # ports:
+    #   - "8080:80" # Example port
+    depends_on:
+      - reservation-api
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    # ports:
+    #   - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      # Uncomment and configure these if you add custom dashboards/datasources
+      # - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
+      # - ./grafana/datasources:/etc/grafana/provisioning/datasources
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin_password # <<< CHANGE THIS FOR PRODUCTION!
+    restart: unless-stopped
+
+volumes:
+  grafana-data: # Volume to persist Grafana data
