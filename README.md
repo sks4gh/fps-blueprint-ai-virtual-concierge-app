@@ -43,7 +43,8 @@ Project Structure
 ├── firebase-service-account.json # **You will place your Firebase Service Account Key here**
 ├── docker-compose.yml        # Orchestrates all services for local development
 ├── .gitignore                # Git ignore file
-└── README.md                 # This file```
+└── README.md                 # This file
+```
 
 Prerequisites
 Before you begin, ensure you have the following installed:
