@@ -15,7 +15,7 @@ Dockerized: Easily deployable locally using Docker Compose.
 Real-time Updates: Reservations list updates automatically upon creation or deletion (frontend polls the API).
 
 Project Structure
-virtual-concierge-app/
+'''virtual-concierge-app/
 ├── docs/                     # Placeholder for documentation
 ├── data/                     # Placeholder for static data, initial database seeds
 ├── frontend-app/
@@ -43,7 +43,7 @@ virtual-concierge-app/
 ├── firebase-service-account.json # **You will place your Firebase Service Account Key here**
 ├── docker-compose.yml        # Orchestrates all services for local development
 ├── .gitignore                # Git ignore file
-└── README.md                 # This file
+└── README.md                 # This file'''
 
 Prerequisites
 Before you begin, ensure you have the following installed:
